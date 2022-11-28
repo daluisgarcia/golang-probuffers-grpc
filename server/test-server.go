@@ -6,6 +6,7 @@ import (
 
 	"github.com/daluisgarcia/golang-probuffers-grpc/models"
 	"github.com/daluisgarcia/golang-probuffers-grpc/repository"
+	"github.com/daluisgarcia/golang-probuffers-grpc/studentpb"
 	"github.com/daluisgarcia/golang-probuffers-grpc/testpb"
 )
 
@@ -34,8 +35,8 @@ func (s *TestServer) GetTest(ctx context.Context, request *testpb.GetTestRequest
 func (s *TestServer) SetTest(ctx context.Context, req *testpb.Test) (*testpb.SetTestResponse, error) {
 
 	test := &models.Test{
-		Id:   req.Id,
-		Name: req.Name,
+		Id:   req.GetId(),
+		Name: req.GetName(),
 	}
 
 	err := s.repo.SetTest(ctx, test)
@@ -67,16 +68,67 @@ func (s *TestServer) SetQuestions(stream testpb.TestService_SetQuestionsServer) 
 		}
 
 		var question = &models.Question{
-			Id:       msg.Id,
-			Question: msg.Question,
-			TestId:   msg.TestId,
-			Answer:   msg.Answer,
+			Id:       msg.GetId(),
+			Question: msg.GetQuestion(),
+			TestId:   msg.GetTestId(),
+			Answer:   msg.GetAnswer(),
 		}
 
-		err = s.repo.SetQuestion(stream.Context(), question)
+		err = s.repo.SetQuestion(context.Background(), question)
 
 		if err != nil {
 			return err
 		}
 	}
+}
+
+func (s *TestServer) EnrollStudents(stream testpb.TestService_EnrollStudentsServer) error {
+	for {
+		msg, err := stream.Recv()
+
+		if err == io.EOF {
+			// The client has finished sending data
+			return stream.SendAndClose(&testpb.SetQuestionResponse{
+				Ok: true,
+			})
+		}
+
+		if err != nil {
+			return err
+		}
+
+		var enrollment = &models.Enrollment{
+			StudentId: msg.GetStudentId(),
+			TestId:    msg.GetTestId(),
+		}
+
+		err = s.repo.SetEnrollment(context.Background(), enrollment)
+
+		if err != nil {
+			return err
+		}
+	}
+}
+
+// The second parameter here is the stream that the server will use to send the data to the client
+func (s *TestServer) GetStudentsPerTest(request *testpb.GetStudentsPerTestRequest, stream testpb.TestService_GetStudentsPerTestServer) error {
+	students, err := s.repo.GetStudentsPerTest(context.Background(), request.GetTestId())
+
+	if err != nil {
+		return err
+	}
+
+	for _, student := range students {
+		err = stream.Send(&studentpb.Student{
+			Id:   student.Id,
+			Name: student.Name,
+			Age:  student.Age,
+		})
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
