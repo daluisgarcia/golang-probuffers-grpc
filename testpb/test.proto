@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package test;
+
+option go_package = 'github.com/daluisgarcia/golang-probuffers-grpc;testpb'; // import path of the package for the protofile in golang
+
+message Test {
+    string id = 1;
+    string name = 2;
+}
+
+message GetStudentRequest {
+    string id = 1;
+}
+
+message SetTestResponse {
+    string id = 1;
+    string name = 2;
+}
+
+service TestService {
+    rpc GetTest(GetStudentRequest) returns (Test);
+    rpc SetTest(Test) returns (SetTestResponse);
+}
