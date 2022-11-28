@@ -17,3 +17,6 @@ Also you need to install the protoc-gen-go-grpc plugin. You can run the command 
 ## Usage
 To generate the gRPC code from the proto file to a .go file, you can run the command ```protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative <relative-route-to-.proto-file>```.
 
+To run the **Student service** run ```go run server-student/main.go```. This one will run in port 5060.
+
+To run the **Test service** run ```go run server-test/main.go```. This one will run in port 5061.
