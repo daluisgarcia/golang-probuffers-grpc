@@ -20,7 +20,7 @@ message SetStudentResponse {
 
 service StudentService {
     // Unary method
-    rpc GetStudent(GetStudentRequest) returns (SetStudentResponse);
+    rpc GetStudent(GetStudentRequest) returns (Student);
     // Unary method
     rpc SetStudent(Student) returns (SetStudentResponse);
 }

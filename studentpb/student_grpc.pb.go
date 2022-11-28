@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.9
-// source: proto/student.proto
+// source: studentpb/student.proto
 
 package studentpb
 
@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StudentServiceClient interface {
 	// Unary method
-	GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*SetStudentResponse, error)
+	GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*Student, error)
 	// Unary method
 	SetStudent(ctx context.Context, in *Student, opts ...grpc.CallOption) (*SetStudentResponse, error)
 }
@@ -36,8 +36,8 @@ func NewStudentServiceClient(cc grpc.ClientConnInterface) StudentServiceClient {
 	return &studentServiceClient{cc}
 }
 
-func (c *studentServiceClient) GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*SetStudentResponse, error) {
-	out := new(SetStudentResponse)
+func (c *studentServiceClient) GetStudent(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*Student, error) {
+	out := new(Student)
 	err := c.cc.Invoke(ctx, "/student.StudentService/GetStudent", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (c *studentServiceClient) SetStudent(ctx context.Context, in *Student, opts
 // for forward compatibility
 type StudentServiceServer interface {
 	// Unary method
-	GetStudent(context.Context, *GetStudentRequest) (*SetStudentResponse, error)
+	GetStudent(context.Context, *GetStudentRequest) (*Student, error)
 	// Unary method
 	SetStudent(context.Context, *Student) (*SetStudentResponse, error)
 	mustEmbedUnimplementedStudentServiceServer()
@@ -69,7 +69,7 @@ type StudentServiceServer interface {
 type UnimplementedStudentServiceServer struct {
 }
 
-func (UnimplementedStudentServiceServer) GetStudent(context.Context, *GetStudentRequest) (*SetStudentResponse, error) {
+func (UnimplementedStudentServiceServer) GetStudent(context.Context, *GetStudentRequest) (*Student, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudent not implemented")
 }
 func (UnimplementedStudentServiceServer) SetStudent(context.Context, *Student) (*SetStudentResponse, error) {
@@ -141,5 +141,5 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/student.proto",
+	Metadata: "studentpb/student.proto",
 }
