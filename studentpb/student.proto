@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package student;
 
-option go_package = 'github.com/daluisgarcia/golang-probuffers-grpc;studentpb'; // import path of the package for the protofile in golang
+option go_package = 'github.com/daluisgarcia/golang-probuffers-grpc/studentpb'; // import path of the package for the protofile in golang
 
 message Student {
     string id = 1;
