@@ -44,6 +44,6 @@ service TestService {
     rpc GetTest(GetTestRequest) returns (Test);
     rpc SetTest(Test) returns (SetTestResponse);
     rpc SetQuestions(stream Question) returns (SetQuestionResponse);
-    rpc EnrollStudent(stream EnrollmentRequest) returns (SetQuestionResponse);
+    rpc EnrollStudents(stream EnrollmentRequest) returns (SetQuestionResponse);
     rpc GetStudentsPerTest(GetStudentsPerTestRequest) returns (stream student.Student); // Student imported from student.proto
 }

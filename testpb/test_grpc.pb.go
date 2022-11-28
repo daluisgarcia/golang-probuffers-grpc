@@ -26,7 +26,7 @@ type TestServiceClient interface {
 	GetTest(ctx context.Context, in *GetTestRequest, opts ...grpc.CallOption) (*Test, error)
 	SetTest(ctx context.Context, in *Test, opts ...grpc.CallOption) (*SetTestResponse, error)
 	SetQuestions(ctx context.Context, opts ...grpc.CallOption) (TestService_SetQuestionsClient, error)
-	EnrollStudent(ctx context.Context, opts ...grpc.CallOption) (TestService_EnrollStudentClient, error)
+	EnrollStudents(ctx context.Context, opts ...grpc.CallOption) (TestService_EnrollStudentsClient, error)
 	GetStudentsPerTest(ctx context.Context, in *GetStudentsPerTestRequest, opts ...grpc.CallOption) (TestService_GetStudentsPerTestClient, error)
 }
 
@@ -90,30 +90,30 @@ func (x *testServiceSetQuestionsClient) CloseAndRecv() (*SetQuestionResponse, er
 	return m, nil
 }
 
-func (c *testServiceClient) EnrollStudent(ctx context.Context, opts ...grpc.CallOption) (TestService_EnrollStudentClient, error) {
-	stream, err := c.cc.NewStream(ctx, &TestService_ServiceDesc.Streams[1], "/test.TestService/EnrollStudent", opts...)
+func (c *testServiceClient) EnrollStudents(ctx context.Context, opts ...grpc.CallOption) (TestService_EnrollStudentsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TestService_ServiceDesc.Streams[1], "/test.TestService/EnrollStudents", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &testServiceEnrollStudentClient{stream}
+	x := &testServiceEnrollStudentsClient{stream}
 	return x, nil
 }
 
-type TestService_EnrollStudentClient interface {
+type TestService_EnrollStudentsClient interface {
 	Send(*EnrollmentRequest) error
 	CloseAndRecv() (*SetQuestionResponse, error)
 	grpc.ClientStream
 }
 
-type testServiceEnrollStudentClient struct {
+type testServiceEnrollStudentsClient struct {
 	grpc.ClientStream
 }
 
-func (x *testServiceEnrollStudentClient) Send(m *EnrollmentRequest) error {
+func (x *testServiceEnrollStudentsClient) Send(m *EnrollmentRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *testServiceEnrollStudentClient) CloseAndRecv() (*SetQuestionResponse, error) {
+func (x *testServiceEnrollStudentsClient) CloseAndRecv() (*SetQuestionResponse, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
@@ -163,7 +163,7 @@ type TestServiceServer interface {
 	GetTest(context.Context, *GetTestRequest) (*Test, error)
 	SetTest(context.Context, *Test) (*SetTestResponse, error)
 	SetQuestions(TestService_SetQuestionsServer) error
-	EnrollStudent(TestService_EnrollStudentServer) error
+	EnrollStudents(TestService_EnrollStudentsServer) error
 	GetStudentsPerTest(*GetStudentsPerTestRequest, TestService_GetStudentsPerTestServer) error
 	mustEmbedUnimplementedTestServiceServer()
 }
@@ -181,8 +181,8 @@ func (UnimplementedTestServiceServer) SetTest(context.Context, *Test) (*SetTestR
 func (UnimplementedTestServiceServer) SetQuestions(TestService_SetQuestionsServer) error {
 	return status.Errorf(codes.Unimplemented, "method SetQuestions not implemented")
 }
-func (UnimplementedTestServiceServer) EnrollStudent(TestService_EnrollStudentServer) error {
-	return status.Errorf(codes.Unimplemented, "method EnrollStudent not implemented")
+func (UnimplementedTestServiceServer) EnrollStudents(TestService_EnrollStudentsServer) error {
+	return status.Errorf(codes.Unimplemented, "method EnrollStudents not implemented")
 }
 func (UnimplementedTestServiceServer) GetStudentsPerTest(*GetStudentsPerTestRequest, TestService_GetStudentsPerTestServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetStudentsPerTest not implemented")
@@ -262,25 +262,25 @@ func (x *testServiceSetQuestionsServer) Recv() (*Question, error) {
 	return m, nil
 }
 
-func _TestService_EnrollStudent_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(TestServiceServer).EnrollStudent(&testServiceEnrollStudentServer{stream})
+func _TestService_EnrollStudents_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TestServiceServer).EnrollStudents(&testServiceEnrollStudentsServer{stream})
 }
 
-type TestService_EnrollStudentServer interface {
+type TestService_EnrollStudentsServer interface {
 	SendAndClose(*SetQuestionResponse) error
 	Recv() (*EnrollmentRequest, error)
 	grpc.ServerStream
 }
 
-type testServiceEnrollStudentServer struct {
+type testServiceEnrollStudentsServer struct {
 	grpc.ServerStream
 }
 
-func (x *testServiceEnrollStudentServer) SendAndClose(m *SetQuestionResponse) error {
+func (x *testServiceEnrollStudentsServer) SendAndClose(m *SetQuestionResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *testServiceEnrollStudentServer) Recv() (*EnrollmentRequest, error) {
+func (x *testServiceEnrollStudentsServer) Recv() (*EnrollmentRequest, error) {
 	m := new(EnrollmentRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -332,8 +332,8 @@ var TestService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "EnrollStudent",
-			Handler:       _TestService_EnrollStudent_Handler,
+			StreamName:    "EnrollStudents",
+			Handler:       _TestService_EnrollStudents_Handler,
 			ClientStreams: true,
 		},
 		{
