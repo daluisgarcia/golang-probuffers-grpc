@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TestServiceClient interface {
-	GetTest(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*Test, error)
+	GetTest(ctx context.Context, in *GetTestRequest, opts ...grpc.CallOption) (*Test, error)
 	SetTest(ctx context.Context, in *Test, opts ...grpc.CallOption) (*SetTestResponse, error)
 }
 
@@ -34,7 +34,7 @@ func NewTestServiceClient(cc grpc.ClientConnInterface) TestServiceClient {
 	return &testServiceClient{cc}
 }
 
-func (c *testServiceClient) GetTest(ctx context.Context, in *GetStudentRequest, opts ...grpc.CallOption) (*Test, error) {
+func (c *testServiceClient) GetTest(ctx context.Context, in *GetTestRequest, opts ...grpc.CallOption) (*Test, error) {
 	out := new(Test)
 	err := c.cc.Invoke(ctx, "/test.TestService/GetTest", in, out, opts...)
 	if err != nil {
@@ -56,7 +56,7 @@ func (c *testServiceClient) SetTest(ctx context.Context, in *Test, opts ...grpc.
 // All implementations must embed UnimplementedTestServiceServer
 // for forward compatibility
 type TestServiceServer interface {
-	GetTest(context.Context, *GetStudentRequest) (*Test, error)
+	GetTest(context.Context, *GetTestRequest) (*Test, error)
 	SetTest(context.Context, *Test) (*SetTestResponse, error)
 	mustEmbedUnimplementedTestServiceServer()
 }
@@ -65,7 +65,7 @@ type TestServiceServer interface {
 type UnimplementedTestServiceServer struct {
 }
 
-func (UnimplementedTestServiceServer) GetTest(context.Context, *GetStudentRequest) (*Test, error) {
+func (UnimplementedTestServiceServer) GetTest(context.Context, *GetTestRequest) (*Test, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTest not implemented")
 }
 func (UnimplementedTestServiceServer) SetTest(context.Context, *Test) (*SetTestResponse, error) {
@@ -85,7 +85,7 @@ func RegisterTestServiceServer(s grpc.ServiceRegistrar, srv TestServiceServer) {
 }
 
 func _TestService_GetTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetStudentRequest)
+	in := new(GetTestRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func _TestService_GetTest_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/test.TestService/GetTest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServiceServer).GetTest(ctx, req.(*GetStudentRequest))
+		return srv.(TestServiceServer).GetTest(ctx, req.(*GetTestRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

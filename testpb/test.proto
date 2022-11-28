@@ -9,7 +9,7 @@ message Test {
     string name = 2;
 }
 
-message GetStudentRequest {
+message GetTestRequest {
     string id = 1;
 }
 
@@ -19,6 +19,6 @@ message SetTestResponse {
 }
 
 service TestService {
-    rpc GetTest(GetStudentRequest) returns (Test);
+    rpc GetTest(GetTestRequest) returns (Test);
     rpc SetTest(Test) returns (SetTestResponse);
 }
