@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"io"
+	"log"
 
 	"github.com/daluisgarcia/golang-probuffers-grpc/models"
 	"github.com/daluisgarcia/golang-probuffers-grpc/repository"
@@ -131,4 +132,40 @@ func (s *TestServer) GetStudentsPerTest(request *testpb.GetStudentsPerTestReques
 	}
 
 	return nil
+}
+
+// Uses the stream to send and receive data
+func (s *TestServer) TakeTest(stream testpb.TestService_TakeTestServer) error {
+	questions, err := s.repo.GetQuestionsPerTest(context.Background(), "t1")
+
+	if err != nil {
+		return err
+	}
+
+	i := 0
+	var currentQuestion = &models.Question{}
+	for {
+		if i < len(questions) {
+			currentQuestion = questions[i]
+		}
+		if i <= len(questions) {
+			questionToSend := &testpb.Question{
+				Id:       currentQuestion.Id,
+				Question: currentQuestion.Question,
+			}
+			err := stream.Send(questionToSend)
+			if err != nil {
+				return err
+			}
+			i++
+		}
+		answer, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		log.Println("Answer received: ", answer.GetAnswer())
+	}
 }
