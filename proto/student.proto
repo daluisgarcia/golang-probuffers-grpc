@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package student;
+
+option go_package = 'github.com/daluisgarcia/golang-probuffers-grpc;studentpb'; // import path of the package for the protofile in golang
+
+message Student {
+    string id = 1;
+    string name = 2;
+    int32 age = 3;
+}
+
+message GetStudentRequest {
+    string id = 1;
+}
+
+message SetStudentResponse {
+    Student student = 1;
+}
+
+service StudentService {
+    // Unary method
+    rpc GetStudent(GetStudentRequest) returns (SetStudentResponse);
+    // Unary method
+    rpc SetStudent(Student) returns (SetStudentResponse);
+}
