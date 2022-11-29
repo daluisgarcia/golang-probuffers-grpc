@@ -20,3 +20,5 @@ To generate the gRPC code from the proto file to a .go file, you can run the com
 To run the **Student service** run ```go run server-student/main.go```. This one will run in port 5060.
 
 To run the **Test service** run ```go run server-test/main.go```. This one will run in port 5061.
+
+To run the **Client**, uncomment/comment the functions depending on what type of connection you want and then run ```go run client/main.go```.
